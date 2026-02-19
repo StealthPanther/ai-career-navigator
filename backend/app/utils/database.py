@@ -12,7 +12,12 @@ class Database:
     def __init__(self):
         # Connect to MongoDB
         mongodb_uri = os.getenv("MONGODB_URI")
-        self.client = AsyncIOMotorClient(mongodb_uri, tlsCAFile=certifi.where())
+        # SSL Handshake fix: Relaxing certificate validation
+        self.client = AsyncIOMotorClient(
+            mongodb_uri, 
+            tlsCAFile=certifi.where(),
+            tlsAllowInvalidCertificates=True
+        )
         self.db = self.client.career_navigator
         
     async def save_resume(self, resume_data: dict) -> str:
