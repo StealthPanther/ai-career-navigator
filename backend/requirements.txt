@@ -13,6 +13,7 @@ pymongo>=4.0.0
 # AI APIs
 openai>=1.0.0
 google-generativeai>=0.3.0
+grpcio>=1.50.0
 
 # Utilities
 python-dotenv>=1.0.0
