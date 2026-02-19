@@ -141,3 +141,49 @@ export const getInterviewSession = async (sessionId: string) => {
 
   return response.json();
 };
+
+// Chat API
+export const chatWithAI = async (userId: string, message: string, roadmapId?: string) => {
+  const response = await fetch(`${API_URL}/api/chat/${userId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message,
+      roadmap_id: roadmapId
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to send message');
+  }
+
+  return response.json();
+};
+
+export const getChatHistory = async (userId: string, roadmapId?: string) => {
+  const url = roadmapId
+    ? `${API_URL}/api/chat/history/${userId}?roadmap_id=${roadmapId}`
+    : `${API_URL}/api/chat/history/${userId}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch chat history');
+  }
+
+  return response.json();
+};
+
+export const clearChatHistory = async (userId: string, roadmapId?: string) => {
+  const url = roadmapId
+    ? `${API_URL}/api/chat/history/${userId}?roadmap_id=${roadmapId}`
+    : `${API_URL}/api/chat/history/${userId}`;
+
+  const response = await fetch(url, { method: 'DELETE' });
+
+  if (!response.ok) {
+    throw new Error('Failed to clear chat history');
+  }
+
+  return response.json();
+};

@@ -17,6 +17,8 @@ interface ChatWidgetProps {
     roadmapId?: string;
 }
 
+import { chatWithAI, getChatHistory, clearChatHistory as apiClearHistory } from '@/lib/apiClient';
+
 export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -38,12 +40,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
 
     const loadHistory = async () => {
         try {
-            const url = roadmapId
-                ? `http://localhost:8000/api/chat/history/${userId}?roadmap_id=${roadmapId}`
-                : `http://localhost:8000/api/chat/history/${userId}`;
-
-            const response = await fetch(url);
-            const data = await response.json();
+            const data = await getChatHistory(userId, roadmapId);
             setMessages(data.history || []);
         } catch (error) {
             console.error('Error loading chat history:', error);
@@ -66,16 +63,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
         setMessages(prev => [...prev, newUserMsg]);
 
         try {
-            const response = await fetch(`http://localhost:8000/api/chat/${userId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: userMessage,
-                    roadmap_id: roadmapId
-                })
-            });
-
-            const data = await response.json();
+            const data = await chatWithAI(userId, userMessage, roadmapId);
 
             // Add AI response
             const aiMsg: Message = {
@@ -101,11 +89,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
         if (!confirm('Clear all chat history?')) return;
 
         try {
-            const url = roadmapId
-                ? `http://localhost:8000/api/chat/history/${userId}?roadmap_id=${roadmapId}`
-                : `http://localhost:8000/api/chat/history/${userId}`;
-
-            await fetch(url, { method: 'DELETE' });
+            await apiClearHistory(userId, roadmapId);
             setMessages([]);
         } catch (error) {
             console.error('Error clearing history:', error);
