@@ -34,12 +34,7 @@ app = FastAPI(
 # CORS - Allow frontend to communicate with backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "https://ai-career-navigator.vercel.app",
-        "https://ai-career-navigator-frontend.vercel.app"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
