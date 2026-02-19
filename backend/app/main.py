@@ -1,4 +1,6 @@
+print("🚀 STARTING APP MODULE EXECUTION...")
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
+print("✅ Imports successful")
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
