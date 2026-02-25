@@ -1,230 +1,93 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { ResumeData, SkillAnalysis, Roadmap } from '@/types';
-import ResumeUploader from '@/components/ResumeUploader';
-import SkillAnalyzer from '@/components/SkillAnalyzer';
-import RoadmapDisplay from '@/components/RoadmapDisplay';
-import AnimatedBackground from '@/components/AnimatedBackground';
-import FloatingIcons from '@/components/FloatingIcons';
-import Floating3DCube from '@/components/Floating3DCube';
-import AnimatedOrbs from '@/components/AnimatedOrbs';
-import { getDashboard } from '@/lib/apiClient';
+import React from "react";
+import Hero from "@/components/Hero";
+import StickyJourney from "@/components/StickyJourney";
+import TechOrbit from "@/components/TechOrbit";
+import { Github, Star } from "lucide-react";
 
 export default function Home() {
-  const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState<string>('');
-  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
-  const [targetRole, setTargetRole] = useState('');
-  const [skillAnalysis, setSkillAnalysis] = useState<SkillAnalysis | null>(null);
-  const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
-
-  // Check if we have a user session
-  useEffect(() => {
-    const storedUserId = localStorage.getItem('user_id');
-    if (storedUserId) {
-      setUserId(storedUserId);
-
-      // Restore session data
-      getDashboard(storedUserId)
-        .then((data) => {
-          if (data.resume) setResumeData(data.resume);
-
-          if (data.skill_analysis) {
-            setSkillAnalysis(data.skill_analysis);
-          }
-
-          if (data.roadmap) {
-            setRoadmap(data.roadmap);
-            setTargetRole(data.roadmap.target_role || data.skill_analysis?.target_role || '');
-          }
-
-          // Auto-navigate based on data
-          if (data.skill_analysis && data.roadmap) {
-            setStep(3);
-          } else if (data.resume) {
-            setStep(2);
-          }
-        })
-        .catch((err) => console.error("Failed to restore session:", err));
-    }
-  }, []);
-
-  const handleResumeUpload = (data: ResumeData) => {
-    setResumeData(data);
-    setUserId(data.user_id);
-    // Store user_id in localStorage for dashboard access
-    localStorage.setItem('user_id', data.user_id);
-    setStep(2);
-  };
-
-  const handleAnalysisComplete = (analysis: SkillAnalysis, roadmapData: Roadmap, role: string) => {
-    setSkillAnalysis(analysis);
-    setRoadmap(roadmapData);
-    setTargetRole(role);
-    setStep(3);
-  };
-
-  const resetFlow = () => {
-    setStep(1);
-    setUserId('');
-    setResumeData(null);
-    setTargetRole('');
-    setSkillAnalysis(null);
-    setRoadmap(null);
-  };
-
   return (
-    <main className="min-h-screen relative overflow-hidden flex flex-col items-center">
-      <AnimatedBackground />
-      <FloatingIcons />
-      <AnimatedOrbs />
-
-      {/* 3D Floating Cubes */}
-      <Floating3DCube size={100} top="15%" left="8%" animationDuration={25} delay={0} />
-      <Floating3DCube size={80} top="60%" right="10%" animationDuration={30} delay={5} />
-      <Floating3DCube size={60} bottom="20%" left="15%" animationDuration={35} delay={10} />
-
-      {/* Navigation Buttons - Top Right */}
-      {userId && (
-        <div className="absolute top-8 right-8 z-20">
+    <main className="min-h-screen bg-black text-white selection:bg-synapse-purple/30 selection:text-white relative font-sans">
+      {/* Global Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10 py-4 px-6 md:px-12 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-neural-blue to-synapse-purple flex items-center justify-center p-1">
+            <span className="w-full h-full rounded-md border border-white/30" />
+          </div>
+          <span className="font-bold text-lg tracking-tight">AI Career Navigator</span>
+        </div>
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+          <a href="#features" className="hover:text-white transition-colors">Features</a>
+          <a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a>
+        </div>
+        <div className="flex items-center gap-4">
           <a
-            href="/interview"
-            className="px-6 py-3 rounded-lg glass-panel border border-white/10 hover:border-primary/30 transition-all flex items-center gap-2 text-foreground hover:text-primary font-medium"
+            href="https://github.com/StealthPanther/ai-career-navigator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 rounded-full glass-panel hover:bg-white/10 transition-colors text-sm font-medium border-white/20"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            Interview Prep
+            <Github className="w-4 h-4" />
+            <span>Star on GitHub</span>
           </a>
         </div>
-      )}
+      </nav>
 
+      <Hero />
+      <StickyJourney />
 
-      <div className="relative z-10 container mx-auto px-4 py-8 md:py-16 grow flex flex-col">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-6xl md:text-8xl font-black text-foreground mb-6 tracking-tighter">
-            AI Career <span className="text-gradient-primary">Navigator</span>
-          </h1>
-          <div className="inline-block">
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto px-6 font-medium leading-relaxed">
-              Upload your resume, choose your dream role, and get a personalized
-              <span className="text-primary"> AI-powered</span> learning roadmap.
-            </p>
-          </div>
-        </motion.div>
+      <TechOrbit />
 
-        {/* Progress Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex justify-center items-center gap-6 mb-16"
-        >
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-6">
-              <div className="relative flex flex-col items-center gap-2">
-                <div
-                  className={`
-                    w-12 h-12 flex items-center justify-center font-bold text-lg rounded-full
-                    transition-all duration-300 border-2
-                    ${step >= i
-                      ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(249,115,22,0.5)]'
-                      : 'bg-white/5 text-muted-foreground border-white/10'
-                    }
-                  `}
-                >
-                  {i}
-                </div>
+      {/* Footer CTA & Links */}
+      <footer className="relative border-t border-white/10 pt-20 pb-10 overflow-hidden">
+        <div className="absolute bottom-0 w-full h-px bg-gradient-to-r from-transparent via-neural-blue/50 to-transparent" />
+        <div className="container px-4 mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 relative z-10">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-6 h-6 rounded bg-gradient-to-br from-neural-blue to-synapse-purple flex items-center justify-center p-0.5">
+                <span className="w-full h-full rounded-[3px] border border-white/30" />
               </div>
-
-              {i < 3 && (
-                <div
-                  className={`
-                    w-12 md:w-24 h-0.5 transition-all duration-500 rounded-full
-                    ${step > i
-                      ? 'bg-gradient-to-r from-primary to-primary/50' // eslint-disable-line
-                      : 'bg-white/10'
-                    }
-                  `}
-                />
-              )}
+              <span className="font-bold tracking-tight">AI Career Navigator</span>
             </div>
-          ))}
-        </motion.div>
-
-        {/* Main Content */}
-        <AnimatePresence mode="wait">
-          {step === 1 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="w-full max-w-3xl mx-auto"
+            <p className="text-muted-foreground text-sm max-w-sm leading-relaxed mb-6">
+              The most advanced AI career navigation system. Built with Next.js 14, Framer Motion, and Tailwind CSS. Open source and ready to deploy.
+            </p>
+            <a
+              href="https://github.com/StealthPanther/ai-career-navigator"
+              className="inline-flex items-center gap-2 text-sm text-white hover:text-neural-blue transition-colors font-medium border-b border-transparent hover:border-neural-blue pb-1"
             >
-              <ResumeUploader onUploadComplete={handleResumeUpload} />
-            </motion.div>
-          )}
+              <Star className="w-4 h-4" /> Drop a star on GitHub
+            </a>
+          </div>
 
-          {step === 2 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="w-full max-w-6xl mx-auto"
-            >
-              <SkillAnalyzer
-                userId={userId}
-                resumeData={resumeData}
-                onComplete={handleAnalysisComplete}
-              />
-            </motion.div>
-          )}
+          <div>
+            <h4 className="font-semibold mb-4 text-white/90">Resources</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li><a href="https://github.com/StealthPanther/ai-career-navigator#readme" target="_blank" rel="noopener noreferrer" className="hover:text-neural-blue transition-colors">Documentation</a></li>
+              <li><a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" className="hover:text-neural-blue transition-colors">API Reference</a></li>
+              <li><a href="https://github.com/StealthPanther/ai-career-navigator/discussions" target="_blank" rel="noopener noreferrer" className="hover:text-neural-blue transition-colors">Community</a></li>
+            </ul>
+          </div>
 
-          {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="w-full max-w-7xl mx-auto"
-            >
-              <RoadmapDisplay
-                skillAnalysis={skillAnalysis}
-                roadmap={roadmap}
-                targetRole={targetRole}
-                userId={userId}
-                onReset={resetFlow}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          <div>
+            <h4 className="font-semibold mb-4 text-white/90">Connect</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li><a href="#" className="hover:text-synapse-purple transition-colors">X (Twitter)</a></li>
+              <li><a href="#" className="hover:text-synapse-purple transition-colors">Discord</a></li>
+              <li><a href="#" className="hover:text-synapse-purple transition-colors">LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-muted-foreground/50 pt-8 border-t border-white/5">
+          <p>© {new Date().getFullYear()} AI Career Navigator. All rights reserved.</p>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

@@ -57,6 +57,11 @@
     /* Custom Colors for Gradients */
     --color-grape: 266 70% 60%;
     --color-rose: 330 80% 60%;
+
+    /* Neural Nexus Theme */
+    --neural-blue: 217.2 91.2% 59.8%;
+    --synapse-purple: 271.5 81.3% 65.3%;
+    --glow: 0 0 20px #3b82f6;
   }
 
   /* Force Dark Mode styles everywhere */
@@ -80,6 +85,10 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 24.6 95% 53.1%;
+
+    --neural-blue: 217.2 91.2% 59.8%;
+    --synapse-purple: 271.5 81.3% 65.3%;
+    --glow: 0 0 20px #3b82f6;
   }
 }
 

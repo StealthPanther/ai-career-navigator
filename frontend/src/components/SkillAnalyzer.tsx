@@ -60,9 +60,9 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            <span className="text-gradient-primary">Analysis and</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neural-blue to-synapse-purple filter drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">Analysis and</span>
             <br />
-            <span className="text-foreground">Recommendations</span>
+            <span className="text-white">Recommendations</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Monitor your profile performance using AI metrics like skill gaps, market trends, and role fitment.
@@ -76,14 +76,14 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
         <div className="md:col-span-12 lg:col-span-8">
           <Card className="p-8 h-full glass-panel border-0 relative overflow-hidden group">
             {/* Decorative background glow */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 group-hover:bg-primary/10 transition-all duration-700" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-neural-blue/10 rounded-full blur-3xl -z-10 group-hover:bg-synapse-purple/20 transition-all duration-700" />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 rounded-xl bg-primary/10 text-primary">
+                <div className="p-3 rounded-xl bg-neural-blue/10 text-neural-blue">
                   <Sparkles size={24} />
                 </div>
                 <div>
@@ -101,8 +101,8 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
                     transition={{ delay: idx * 0.03 }}
                   >
                     <Badge className="
-                            bg-secondary/10 text-secondary hover:bg-secondary/20 
-                            border border-secondary/20 px-4 py-2 text-sm 
+                            bg-synapse-purple/10 text-synapse-purple hover:bg-synapse-purple/20 
+                            border border-synapse-purple/30 px-4 py-2 text-sm 
                             transition-all duration-300 hover:scale-105
                         ">
                       {skill}
@@ -117,8 +117,8 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
         {/* Action / Stat Card - Right Column (Placeholder for stats, currently just visual balance) */}
         <div className="md:col-span-12 lg:col-span-4 space-y-6">
           <Card className="p-6 glass-panel border-0 relative overflow-hidden group h-full flex flex-col justify-center items-center text-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <Target className="w-12 h-12 text-primary mb-4" />
+            <div className="absolute inset-0 bg-gradient-to-br from-neural-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <Target className="w-12 h-12 text-neural-blue mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">Target Precise Roles</h3>
             <p className="text-muted-foreground text-sm">
               Select a target role below to generate a personalized gap analysis and learning roadmap.
@@ -144,16 +144,16 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
               className={`
                 p-4 rounded-xl border text-left flex flex-col justify-between h-32 transition-all duration-300 group
                 ${selectedRole === role
-                  ? 'glass-panel border-primary/50 ring-2 ring-primary/20 bg-primary/5'
+                  ? 'glass-panel border-neural-blue/50 ring-2 ring-neural-blue/20 bg-neural-blue/5'
                   : 'glass-panel border-white/5 hover:border-white/20 hover:bg-white/5'
                 }
                 `}
             >
-              <div className={`p-2 rounded-lg w-fit ${selectedRole === role ? 'bg-primary text-white' : 'bg-white/5 text-muted-foreground group-hover:text-foreground'}`}>
+              <div className={`p-2 rounded-lg w-fit ${selectedRole === role ? 'bg-neural-blue text-white' : 'bg-white/5 text-muted-foreground group-hover:text-foreground'}`}>
                 <TrendingUp size={20} />
               </div>
               <div className="w-full">
-                <p className={`font-medium ${selectedRole === role ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
+                <p className={`font-medium ${selectedRole === role ? 'text-neural-blue' : 'text-muted-foreground group-hover:text-foreground'}`}>
                   {role}
                 </p>
               </div>
@@ -175,10 +175,10 @@ export default function SkillAnalyzer({ userId, resumeData, onComplete }: SkillA
           className="
             relative overflow-hidden
             px-12 py-8 text-lg font-semibold rounded-2xl
-            bg-linear-to-r from-orange-500 to-rose-600 
-            hover:from-orange-600 hover:to-rose-700
+            bg-linear-to-r from-neural-blue to-synapse-purple 
+            hover:from-blue-600 hover:to-purple-700
             disabled:opacity-50 disabled:cursor-not-allowed
-            shadow-xl hover:shadow-2xl shadow-orange-500/20
+            shadow-xl hover:shadow-2xl shadow-[0_0_15px_rgba(59,130,246,0.3)]
             transition-all duration-300 transform hover:-translate-y-1
             group
           "

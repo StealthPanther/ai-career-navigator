@@ -49,11 +49,11 @@ export default function WeekDetailCard({ week, index }: WeekDetailCardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
         >
-            <Card className="p-6 glass-panel border-0 hover:border-primary/20 transition-all">
+            <Card className="p-6 glass-panel border-0 hover:border-neural-blue/20 transition-all">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/30">
+                        <div className="bg-neural-blue text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                             {week.week}
                         </div>
                         <div>
@@ -69,7 +69,7 @@ export default function WeekDetailCard({ week, index }: WeekDetailCardProps) {
                 {/* Goal */}
                 <div className="mb-6">
                     <div className="flex items-center gap-2 mb-2">
-                        <Target size={18} className="text-primary" />
+                        <Target size={18} className="text-neural-blue" />
                         <h4 className="font-bold text-foreground">Goal</h4>
                     </div>
                     <p className="text-muted-foreground pl-6">{week.goal}</p>
@@ -115,14 +115,14 @@ export default function WeekDetailCard({ week, index }: WeekDetailCardProps) {
                                 href={resource.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-3 p-3 rounded-lg glass-panel border border-white/5 hover:border-primary/30 hover:bg-white/5 transition-all group"
+                                className="flex items-center gap-3 p-3 rounded-lg glass-panel border border-white/5 hover:border-neural-blue/30 hover:bg-white/5 transition-all group"
                                 whileHover={{ x: 4 }}
                             >
                                 <div className="shrink-0">
                                     {getResourceIcon(resource.type)}
                                 </div>
                                 <div className="grow">
-                                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                                    <p className="font-medium text-foreground group-hover:text-neural-blue transition-colors">
                                         {resource.title}
                                     </p>
                                     <p className="text-xs text-muted-foreground">{resource.platform}</p>
@@ -130,7 +130,7 @@ export default function WeekDetailCard({ week, index }: WeekDetailCardProps) {
                                 <Badge variant="outline" className="text-xs border-white/10">
                                     {resource.type}
                                 </Badge>
-                                <ExternalLink size={14} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                <ExternalLink size={14} className="text-muted-foreground group-hover:text-neural-blue transition-colors" />
                             </motion.a>
                         ))}
                     </div>
@@ -140,13 +140,13 @@ export default function WeekDetailCard({ week, index }: WeekDetailCardProps) {
                 {week.mini_project && (
                     <div className="mt-6 pt-6 border-t border-white/10">
                         <div className="flex items-center gap-2 mb-3">
-                            <Code size={18} className="text-secondary" />
+                            <Code size={18} className="text-synapse-purple" />
                             <h4 className="font-bold text-foreground">Weekend Project</h4>
                             <Badge className={`ml-auto ${getDifficultyColor(week.mini_project.difficulty)}`}>
                                 {week.mini_project.difficulty}
                             </Badge>
                         </div>
-                        <div className="p-4 rounded-lg glass-panel border border-secondary/20 bg-secondary/5">
+                        <div className="p-4 rounded-lg glass-panel border border-synapse-purple/30 bg-synapse-purple/5">
                             <h5 className="font-bold text-foreground mb-2">{week.mini_project.title}</h5>
                             <p className="text-sm text-muted-foreground">{week.mini_project.description}</p>
                         </div>

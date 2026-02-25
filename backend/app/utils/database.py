@@ -12,11 +12,16 @@ class Database:
     def __init__(self):
         # Connect to MongoDB
         mongodb_uri = os.getenv("MONGODB_URI")
-        # SSL Handshake fix: Relaxing certificate validation
+        # Only use TLS settings for remote connections (like MongoDB Atlas)
+        # Local connections typically don't use TLS and will fail the handshake if forced
+        kwargs = {}
+        if "localhost" not in mongodb_uri and "127.0.0.1" not in mongodb_uri:
+            kwargs["tlsCAFile"] = certifi.where()
+            kwargs["tlsAllowInvalidCertificates"] = True
+            
         self.client = AsyncIOMotorClient(
             mongodb_uri, 
-            tlsCAFile=certifi.where(),
-            tlsAllowInvalidCertificates=True
+            **kwargs
         )
         self.db = self.client.career_navigator
         

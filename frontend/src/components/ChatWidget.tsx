@@ -107,7 +107,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                 >
                     <Button
                         onClick={() => setIsOpen(true)}
-                        className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/50 border-2 border-primary/30"
+                        className="w-16 h-16 rounded-full bg-neural-blue hover:bg-blue-600 shadow-2xl shadow-[0_0_15px_rgba(59,130,246,0.5)] border-2 border-neural-blue/30"
                     >
                         <MessageCircle size={28} />
                     </Button>
@@ -123,11 +123,11 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         className="fixed bottom-8 right-8 z-9999 w-96 h-[600px]"
                     >
-                        <Card className="h-full flex flex-col backdrop-blur-xl bg-black/80 border-2 border-primary/30 shadow-2xl shadow-primary/20">
+                        <Card className="h-full flex flex-col backdrop-blur-xl bg-black/80 border-2 border-neural-blue/30 shadow-2xl shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                             {/* Header */}
                             <div className="p-4 border-b border-white/10 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <MessageCircle className="text-primary" size={24} />
+                                    <MessageCircle className="text-neural-blue" size={24} />
                                     <h3 className="font-bold text-lg text-foreground">AI Study Buddy</h3>
                                 </div>
                                 <div className="flex gap-2">
@@ -166,7 +166,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                                         >
                                             <div
                                                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${msg.role === 'user'
-                                                    ? 'bg-primary text-white'
+                                                    ? 'bg-neural-blue text-white'
                                                     : 'bg-white/10 text-foreground'
                                                     }`}
                                             >
@@ -179,9 +179,9 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                                     <div className="flex justify-start">
                                         <div className="bg-white/10 rounded-2xl px-4 py-2">
                                             <div className="flex gap-1">
-                                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                             </div>
                                         </div>
                                     </div>
@@ -198,13 +198,13 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                                         onChange={(e) => setInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                         placeholder="Ask me anything..."
-                                        className="flex-1 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary/50"
+                                        className="flex-1 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground placeholder-muted-foreground focus:outline-none focus:border-neural-blue/50"
                                         disabled={loading}
                                     />
                                     <Button
                                         onClick={sendMessage}
                                         disabled={!input.trim() || loading}
-                                        className="px-4 bg-primary hover:bg-primary/90"
+                                        className="px-4 bg-neural-blue hover:bg-blue-600"
                                     >
                                         <Send size={18} />
                                     </Button>

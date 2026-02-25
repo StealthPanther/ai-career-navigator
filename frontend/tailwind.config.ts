@@ -43,6 +43,8 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "neural-blue": "hsl(var(--neural-blue))",
+        "synapse-purple": "hsl(var(--synapse-purple))",
       },
       borderRadius: {
         lg: "var(--radius)",

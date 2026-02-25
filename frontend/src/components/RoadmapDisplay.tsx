@@ -67,10 +67,10 @@ export default function RoadmapDisplay({
         <Card className="p-6 glass-panel border-0">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Calendar className="text-primary" size={28} />
+              <Calendar className="text-neural-blue" size={28} />
               <h3 className="text-2xl font-bold text-foreground">{targetRole} - {roadmap.weekly_plan?.length} Week Plan</h3>
             </div>
-            <Badge className="py-2 px-4 text-sm font-bold bg-secondary/10 text-secondary border border-secondary/20">
+            <Badge className="py-2 px-4 text-sm font-bold bg-synapse-purple/10 text-synapse-purple border border-synapse-purple/30">
               <Sparkles size={14} className="mr-2" />
               AI-Powered Roadmap
             </Badge>
@@ -101,7 +101,7 @@ export default function RoadmapDisplay({
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <Trophy size={36} className="text-primary drop-shadow-lg" />
+                <Trophy size={36} className="text-neural-blue drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                 <h2 className="text-4xl font-bold tracking-tight text-foreground">Job Readiness Score</h2>
               </div>
               <p className="text-lg font-medium text-muted-foreground">For <span className="text-foreground">{targetRole}</span></p>
@@ -112,7 +112,7 @@ export default function RoadmapDisplay({
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.3, type: 'spring' }}
-                className="text-8xl font-mono-stat text-gradient-primary drop-shadow-2xl"
+                className="text-8xl font-mono-stat text-transparent bg-clip-text bg-gradient-to-r from-neural-blue to-synapse-purple filter drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
               >
                 {skillAnalysis.job_readiness_score}%
               </motion.div>
@@ -127,7 +127,7 @@ export default function RoadmapDisplay({
           </div>
 
           <div className="mt-8">
-            <Progress value={skillAnalysis.job_readiness_score} className="h-4 bg-secondary/20" />
+            <Progress value={skillAnalysis.job_readiness_score} className="h-4 bg-white/10" indicatorClass="bg-neural-blue" />
           </div>
         </motion.div>
       </Card>
@@ -195,7 +195,7 @@ export default function RoadmapDisplay({
         {/* Market Insights */}
         <Card className="p-6 glass-panel border-0">
           <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="text-secondary" size={28} />
+            <TrendingUp className="text-synapse-purple" size={28} />
             <h2 className="text-2xl font-bold text-foreground">Market Insights</h2>
           </div>
 
@@ -210,12 +210,12 @@ export default function RoadmapDisplay({
                 >
                   <div className="glass-panel border border-white/5 hover:border-primary/30 transition-all p-4 rounded-lg">
                     <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-bold text-sm text-foreground">
+                      <h4 className="font-bold text-sm text-white">
                         {skill}
                       </h4>
                       <Badge className={`text-xs font-bold border-0 ${stats.demand === 'High'
-                        ? 'bg-primary/20 text-primary'
-                        : 'bg-secondary/20 text-secondary'
+                        ? 'bg-neural-blue/20 text-neural-blue'
+                        : 'bg-synapse-purple/20 text-synapse-purple'
                         }`}>
                         {stats.demand}
                       </Badge>
@@ -228,7 +228,7 @@ export default function RoadmapDisplay({
                       </div>
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-muted-foreground">Growth</span>
-                        <span className="font-mono-stat text-primary font-semibold">{stats.growth}</span>
+                        <span className="font-mono-stat text-neural-blue font-semibold">{stats.growth}</span>
                       </div>
                     </div>
 
@@ -247,7 +247,7 @@ export default function RoadmapDisplay({
       <div className="flex justify-center gap-4 pt-8">
         <Button
           onClick={() => setShowDetailedRoadmap(true)}
-          className="px-12 py-8 text-xl bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/30"
+          className="px-12 py-8 text-xl bg-neural-blue hover:bg-blue-600 text-white shadow-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all"
         >
           <Calendar className="mr-3" size={24} />
           View Full {roadmap.weekly_plan?.length}-Week Roadmap

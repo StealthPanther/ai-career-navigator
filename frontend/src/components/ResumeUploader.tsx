@@ -61,11 +61,11 @@ export default function ResumeUploader({ onUploadComplete }: ResumeUploaderProps
             backdrop-blur-xl bg-white/5
             transition-all duration-500 ease-out
             group
-            ${isDragActive ? 'border-primary/50 bg-primary/10 ring-2 ring-primary/20 scale-[1.02]' : 'hover:border-white/20 hover:bg-white/10'}
+            ${isDragActive ? 'border-neural-blue/50 bg-neural-blue/10 ring-2 ring-neural-blue/20 scale-[1.02]' : 'hover:border-white/20 hover:bg-white/10'}
           `}
         >
           {/* Subtle Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-neural-blue/10 via-transparent to-synapse-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
           <input {...getInputProps()} />
 
@@ -77,7 +77,7 @@ export default function ResumeUploader({ onUploadComplete }: ResumeUploaderProps
                 className="flex flex-col items-center"
               >
                 <div className="relative mb-6">
-                  <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-primary" />
+                  <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-neural-blue" />
                   <FileText className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white" size={28} />
                 </div>
                 <p className="text-xl font-medium text-white mb-2">Analyzing Profile...</p>
@@ -111,14 +111,14 @@ export default function ResumeUploader({ onUploadComplete }: ResumeUploaderProps
                 className="flex flex-col items-center"
               >
                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-white/10 to-white/5 border border-white/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <Upload className="text-white group-hover:text-primary transition-colors duration-300" size={40} />
+                  <Upload className="text-white group-hover:text-neural-blue transition-colors duration-300" size={40} />
                 </div>
 
                 <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">
                   Upload Resume
                 </h3>
 
-                <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300">
+                <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 group-hover:bg-neural-blue group-hover:border-neural-blue group-hover:text-white transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]">
                   <span className="text-sm font-medium">Click to Browse or Drag File</span>
                   <ArrowRight size={16} />
                 </div>
