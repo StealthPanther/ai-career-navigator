@@ -76,7 +76,15 @@ Extract ALL skills mentioned (technical and soft skills).
                 # Fallback to Gemini
                 # Run blocking Gemini call in thread pool
                 response = await self._run_blocking(self.gemini_model.generate_content, prompt)
-                return json.loads(response.text)
+                
+                # Clean up potential Markdown formatting from Gemini's response
+                text = response.text.strip()
+                if text.startswith("```json"):
+                    text = text[7:-3].strip()
+                elif text.startswith("```"):
+                    text = text[3:-3].strip()
+                    
+                return json.loads(text)
             except Exception as e2:
                 print(f"Gemini also failed: {e2}")
                 # Ultimate fallback for resume parsing
