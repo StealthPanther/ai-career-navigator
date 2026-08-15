@@ -3,8 +3,6 @@
 import { useState } from 'react';
 
 import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import type { SkillAnalysis, Roadmap, WeekPlan, TrendingSkill } from '@/types';
@@ -19,6 +17,9 @@ import {
   Sparkles
 } from 'lucide-react';
 import ChatWidget from './ChatWidget';
+import ChapterLabel from './logbook/ChapterLabel';
+import Stamp from './logbook/Stamp';
+import Tape from './logbook/Tape';
 
 interface RoadmapDisplayProps {
   skillAnalysis: SkillAnalysis;
@@ -40,230 +41,239 @@ export default function RoadmapDisplay({
   if (showDetailedRoadmap) {
     // DETAILED ROADMAP VIEW
     return (
-      <div className="space-y-8 animate-fade-in-up">
-        {/* Header with Back Button */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-4xl font-bold text-foreground">Your Learning Roadmap</h2>
-          <div className="flex gap-4">
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <ChapterLabel index="03" title="The Roadmap" className="mb-3 max-w-sm" />
+            <h2 className="font-serif text-4xl font-black tracking-tight text-ink">
+              Your Learning Roadmap
+            </h2>
+          </div>
+          <div className="flex gap-3">
             <Button
               onClick={() => setShowDetailedRoadmap(false)}
               variant="outline"
-              className="px-6 py-6 text-lg border-white/10 hover:bg-white/5"
+              className="h-auto border-ink/30 bg-paper-2 px-5 py-3 font-sans text-xs uppercase tracking-[0.18em] text-ink hover:bg-paper"
             >
               ← Back to Summary
             </Button>
             <Button
               onClick={onReset}
               variant="outline"
-              className="px-6 py-6 text-lg border-white/10 hover:bg-white/5"
+              className="h-auto border-ink/30 bg-paper-2 px-5 py-3 font-sans text-xs uppercase tracking-[0.18em] text-ink hover:bg-paper"
             >
-              <RotateCcw className="mr-2" size={20} />
+              <RotateCcw className="mr-2 h-4 w-4" />
               Start Over
             </Button>
           </div>
         </div>
 
-        {/* Detailed Roadmap */}
-        <Card className="p-6 glass-panel border-0">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <Calendar className="text-neural-blue" size={28} />
-              <h3 className="text-2xl font-bold text-foreground">{targetRole} - {roadmap.weekly_plan?.length} Week Plan</h3>
+        {/* Plan masthead */}
+        <div className="relative border-2 border-ink bg-paper-2 p-6 shadow-[6px_6px_0_-3px_hsl(var(--ink))]">
+          <Tape className="-top-3 left-10" angle={-4} />
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Calendar className="h-7 w-7 text-stamp" />
+              <div>
+                <h3 className="font-serif text-2xl font-bold text-ink">
+                  {targetRole} — {roadmap.weekly_plan?.length} week plan
+                </h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
+                  bound & numbered · study one chapter per week
+                </p>
+              </div>
             </div>
-            <Badge className="py-2 px-4 text-sm font-bold bg-synapse-purple/10 text-synapse-purple border border-synapse-purple/30">
-              <Sparkles size={14} className="mr-2" />
-              AI-Powered Roadmap
-            </Badge>
+            <Stamp tone="blue" flat className="hidden sm:inline-block">
+              <Sparkles className="mr-1 inline h-3 w-3" />
+              AI-powered
+            </Stamp>
           </div>
+        </div>
 
-          {/* Week Cards */}
-          <div className="space-y-6">
-            {roadmap.weekly_plan?.map((week: WeekPlan, idx: number) => (
-              <WeekDetailCard key={idx} week={week} index={idx} />
-            ))}
-          </div>
-        </Card>
+        {/* Week cards */}
+        <div className="space-y-6">
+          {roadmap.weekly_plan?.map((week: WeekPlan, idx: number) => (
+            <WeekDetailCard key={idx} week={week} index={idx} />
+          ))}
+        </div>
       </div>
     );
   }
 
   // SUMMARY VIEW (Default)
+  const score = skillAnalysis.job_readiness_score;
+  const status =
+    score >= 80 ? 'Job ready' : score >= 60 ? 'Almost there' : 'In progress';
+
   return (
-    <div className="space-y-8 animate-fade-in-up">
-      {/* Job Readiness Score */}
-      <Card className="p-8 glass-panel border-0 relative overflow-hidden group">
-        <div className="absolute inset-0 bg-primary/10 opacity-50 blur-3xl -z-10" />
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Trophy size={36} className="text-neural-blue drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
-                <h2 className="text-4xl font-bold tracking-tight text-foreground">Job Readiness Score</h2>
-              </div>
-              <p className="text-lg font-medium text-muted-foreground">For <span className="text-foreground">{targetRole}</span></p>
+    <div className="space-y-8">
+      {/* Job readiness score */}
+      <div className="relative border-2 border-ink bg-paper-2 p-8 shadow-[8px_10px_0_-4px_hsl(var(--ink))]">
+        <Tape className="-top-3 left-1/2 -translate-x-1/2" angle={-2} />
+        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+          <div>
+            <div className="mb-2 flex items-center gap-3">
+              <Trophy className="h-8 w-8 text-gold" />
+              <h2 className="font-serif text-4xl font-black tracking-tight text-ink">
+                Job Readiness Score
+              </h2>
             </div>
+            <p className="font-mono text-xs uppercase tracking-[0.22em] text-ink-2">
+              for <span className="text-ink">{targetRole}</span>
+            </p>
+          </div>
 
-            <div className="text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3, type: 'spring' }}
-                className="text-8xl font-mono-stat text-transparent bg-clip-text bg-gradient-to-r from-neural-blue to-synapse-purple filter drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-              >
-                {skillAnalysis.job_readiness_score}%
-              </motion.div>
-              <p className="text-xl mt-2 font-bold text-foreground">
-                {skillAnalysis.job_readiness_score >= 80
-                  ? '🎉 Job Ready!'
-                  : skillAnalysis.job_readiness_score >= 60
-                    ? '🚀 Almost There'
-                    : '📚 Keep Learning'}
-              </p>
+          <div className="text-center">
+            <motion.div
+              initial={{ scale: 0, rotate: -8 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 140, damping: 14 }}
+              className="font-serif text-8xl font-black leading-none text-ink"
+            >
+              {score}
+              <span className="text-3xl text-stamp">%</span>
+            </motion.div>
+            <div className="mt-3">
+              <Stamp tone={score >= 60 ? 'red' : 'ink'} animate>
+                {status}
+              </Stamp>
             </div>
           </div>
+        </div>
 
-          <div className="mt-8">
-            <Progress value={skillAnalysis.job_readiness_score} className="h-4 bg-white/10" indicatorClass="bg-neural-blue" />
+        {/* Ruled progress bar */}
+        <div className="relative mt-8">
+          <Progress
+            value={score}
+            className="h-5 rounded-none border border-ink bg-paper"
+            indicatorClass="bg-ink"
+          />
+          {/* tick marks */}
+          <div className="pointer-events-none absolute inset-0 flex justify-between px-0">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => (
+              <span key={t} className="h-full w-px bg-paper/60" />
+            ))}
           </div>
-        </motion.div>
-      </Card>
+        </div>
+      </div>
 
-      {/* Skills & Market Insights Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        {/* Skill Gap Analysis */}
-        <Card className="p-6 glass-panel border-0">
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="text-green-400" size={28} />
-            <h2 className="text-2xl font-bold text-foreground">Skill Gap</h2>
+      {/* Ledger + quotes */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Skill gap — the ledger */}
+        <div className="border border-ink/15 bg-paper-2 p-7 shadow-[6px_6px_0_-3px_hsl(var(--ink))]">
+          <div className="mb-6 flex items-center gap-3 border-b border-ink/15 pb-4">
+            <TrendingUp className="h-6 w-6 text-stamp" />
+            <h2 className="font-serif text-2xl font-bold text-ink">The Ledger</h2>
           </div>
 
-          <div className="space-y-6">
-            {/* Skills You Have */}
-            <div>
-              <h3 className="text-lg font-bold text-green-400 mb-3 flex items-center gap-2">
-                <CheckCircle2 size={20} />
-                You Have ({skillAnalysis.matching_skills.length})
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {skillAnalysis.matching_skills.map((skill: string, idx: number) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.03 }}
-                  >
-                    <Badge className="text-xs py-1 px-3 font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20">
-                      {skill}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-white/10" />
-
-            {/* Skills to Learn */}
-            <div>
-              <h3 className="text-lg font-bold text-orange-400 mb-3 flex items-center gap-2">
-                <XCircle size={20} />
-                To Learn ({skillAnalysis.missing_skills.length})
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {skillAnalysis.missing_skills.map((skill: string, idx: number) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.03 }}
-                  >
-                    <Badge variant="outline" className="text-xs py-1 px-3 font-medium border-orange-500/20 text-orange-300 bg-orange-500/5 hover:bg-orange-500/10">
-                      {skill}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </div>
+          <div>
+            <h3 className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.22em] text-ink">
+              <CheckCircle2 className="h-4 w-4 text-stamp" />
+              You have ({skillAnalysis.matching_skills.length})
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {skillAnalysis.matching_skills.map((skill: string, idx: number) => (
+                <motion.span
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.03 }}
+                  className="border border-ink/25 bg-paper px-3 py-1 font-mono text-xs text-ink"
+                >
+                  {skill}
+                </motion.span>
+              ))}
             </div>
           </div>
-        </Card>
 
-        {/* Market Insights */}
-        <Card className="p-6 glass-panel border-0">
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="text-synapse-purple" size={28} />
-            <h2 className="text-2xl font-bold text-foreground">Market Insights</h2>
+          <div className="my-6 border-t border-dashed border-ink/25" />
+
+          <div>
+            <h3 className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.22em] text-stamp">
+              <XCircle className="h-4 w-4" />
+              To learn ({skillAnalysis.missing_skills.length})
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {skillAnalysis.missing_skills.map((skill: string, idx: number) => (
+                <motion.span
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.03 }}
+                  className="border border-dashed border-stamp/50 px-3 py-1 font-mono text-xs text-stamp"
+                >
+                  {skill}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Market insights — the quotes */}
+        <div className="border border-ink/15 bg-paper-2 p-7 shadow-[6px_6px_0_-3px_hsl(var(--stamp))]">
+          <div className="mb-6 flex items-center gap-3 border-b border-ink/15 pb-4">
+            <Sparkles className="h-6 w-6 text-seal" />
+            <h2 className="font-serif text-2xl font-bold text-ink">Market Notes</h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {Object.entries(skillAnalysis.trending_skills_comparison).slice(0, 6).map(
               ([skill, stats]: [string, TrendingSkill], idx) => (
                 <motion.div
                   key={skill}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.08 }}
+                  transition={{ delay: idx * 0.07 }}
+                  className="border border-ink/15 bg-paper p-4 transition-colors hover:border-stamp/50"
                 >
-                  <div className="glass-panel border border-white/5 hover:border-primary/30 transition-all p-4 rounded-lg">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-bold text-sm text-white">
-                        {skill}
-                      </h4>
-                      <Badge className={`text-xs font-bold border-0 ${stats.demand === 'High'
-                        ? 'bg-neural-blue/20 text-neural-blue'
-                        : 'bg-synapse-purple/20 text-synapse-purple'
-                        }`}>
-                        {stats.demand}
-                      </Badge>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">Salary</span>
-                        <span className="font-mono-stat text-green-400 font-semibold">{stats.avg_salary}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">Growth</span>
-                        <span className="font-mono-stat text-neural-blue font-semibold">{stats.growth}</span>
-                      </div>
-                    </div>
-
-                    <p className="mt-3 pt-3 border-t border-white/5 text-xs text-muted-foreground italic line-clamp-2">
-                      &quot;{stats.reason}&quot;
-                    </p>
+                  <div className="flex items-center justify-between gap-3">
+                    <h4 className="font-serif text-lg font-bold text-ink">{skill}</h4>
+                    <span
+                      className={`font-mono text-[9px] uppercase tracking-[0.2em] ${
+                        stats.demand === 'High' ? 'text-stamp' : 'text-seal'
+                      }`}
+                    >
+                      ● {stats.demand} demand
+                    </span>
                   </div>
+                  <div className="mt-2 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.16em] text-ink-2">
+                    <span>Salary</span>
+                    <span className="text-ink">{stats.avg_salary}</span>
+                    <span className="ml-4">Growth</span>
+                    <span className="text-stamp">{stats.growth}</span>
+                  </div>
+                  <p className="mt-2.5 border-t border-dashed border-ink/20 pt-2 font-serif text-sm italic leading-snug text-ink-2">
+                    “{stats.reason}”
+                  </p>
                 </motion.div>
               )
             )}
           </div>
-        </Card>
+        </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-center gap-4 pt-8">
+      {/* Action buttons */}
+      <div className="flex flex-wrap justify-center gap-4 pt-4">
         <Button
           onClick={() => setShowDetailedRoadmap(true)}
-          className="px-12 py-8 text-xl bg-neural-blue hover:bg-blue-600 text-white shadow-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all"
+          className="btn-hard group h-auto bg-ink px-10 py-5 font-sans text-sm font-semibold uppercase tracking-[0.22em] text-paper-2 hover:bg-ink"
         >
-          <Calendar className="mr-3" size={24} />
-          View Full {roadmap.weekly_plan?.length}-Week Roadmap
+          <Calendar className="mr-3 h-5 w-5 text-stamp" />
+          Open the {roadmap.weekly_plan?.length}-week plan
         </Button>
 
         <Button
           onClick={onReset}
           variant="outline"
-          className="px-8 py-8 text-lg border-white/10 hover:bg-white/5 hover:text-white transition-colors"
+          className="h-auto border-ink/30 bg-paper-2 px-8 py-5 font-sans text-xs uppercase tracking-[0.2em] text-ink hover:bg-paper"
         >
-          <RotateCcw className="mr-2" size={20} />
-          Create New
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Start a new dossier
         </Button>
       </div>
 
-      {/* AI Study Buddy Chat Widget */}
+      {/* AI Study Buddy — marginalia */}
       <ChatWidget userId={userId} />
     </div>
   );

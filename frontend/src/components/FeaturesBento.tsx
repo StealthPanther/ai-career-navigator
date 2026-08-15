@@ -5,161 +5,155 @@ import { motion } from "framer-motion";
 import { FileText, Target, Map, MessageSquareText, Video, LineChart } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import ChapterLabel from "./logbook/ChapterLabel";
+import Tape from "./logbook/Tape";
 
 function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs));
 }
 
-export const BentoGrid = ({
-    className,
-    children,
-}: {
-    className?: string;
-    children?: React.ReactNode;
-}) => {
-    return (
-        <div
-            className={cn(
-                "grid md:auto-rows-[18rem] grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto",
-                className
-            )}
-        >
-            {children}
-        </div>
-    );
-};
-
-export const BentoGridItem = ({
-    className,
-    title,
-    description,
-    header,
-    icon,
-}: {
-    className?: string;
-    title?: string | React.ReactNode;
-    description?: string | React.ReactNode;
-    header?: React.ReactNode;
-    icon?: React.ReactNode;
-}) => {
-    return (
-        <motion.div
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={cn(
-                "row-span-1 rounded-xl group/bento transition duration-200 shadow-input dark:shadow-none p-4 dark:bg-black dark:border-white/[0.2] bg-white border border-transparent justify-between flex flex-col space-y-4 glass-panel",
-                className
-            )}
-        >
-            {header}
-            <div className="group-hover/bento:translate-x-2 transition duration-200">
-                <div className="text-neural-blue mb-2">{icon}</div>
-                <div className="font-sans font-bold text-neural-blue dark:text-neural-blue mb-2 mt-2">
-                    {title}
-                </div>
-                <div className="font-sans font-normal text-muted-foreground text-xs dark:text-neutral-300">
-                    {description}
-                </div>
-            </div>
-        </motion.div>
-    );
-};
+const features = [
+  {
+    index: "01",
+    title: "Smart Résumé Parse",
+    description:
+      "Extract essential skills and experience automatically — every line of your past, filed and indexed.",
+    icon: <FileText className="h-4 w-4 text-stamp" />,
+    image:
+      "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80",
+    caption: "PLATE 01 — THE RÉSUMÉ, DE-CLUTTERED",
+    wide: true,
+  },
+  {
+    index: "02",
+    title: "Skill Gap Analysis",
+    description:
+      "Identify exactly what stands between you and the role you're chasing.",
+    icon: <Target className="h-4 w-4 text-seal" />,
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    caption: "PLATE 02 — WHAT'S MISSING",
+    wide: false,
+  },
+  {
+    index: "03",
+    title: "Personalized Roadmaps",
+    description:
+      "Step-by-step guidance typeset to your trajectory, week by numbered week.",
+    icon: <Map className="h-4 w-4 text-plum" />,
+    image:
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+    caption: "PLATE 03 — THE PLAN, PRINTED",
+    wide: false,
+  },
+  {
+    index: "04",
+    title: "AI Study Buddy",
+    description:
+      "A 24/7 companion that annotates your roadmap in the margins and answers while you work.",
+    icon: <MessageSquareText className="h-4 w-4 text-stamp" />,
+    image:
+      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80",
+    caption: "PLATE 04 — MARGINALIA, LIVE",
+    wide: true,
+  },
+  {
+    index: "05",
+    title: "Interview Prep",
+    description:
+      "Mock technical and behavioral examinations with examiner's remarks.",
+    icon: <Video className="h-4 w-4 text-seal" />,
+    image:
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
+    caption: "PLATE 05 — THE EXAMINATION",
+    wide: false,
+  },
+  {
+    index: "06",
+    title: "Growth Analytics",
+    description:
+      "Track progress visually and stamp each milestone as you clear it.",
+    icon: <LineChart className="h-4 w-4 text-gold" />,
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+    caption: "PLATE 06 — THE LEDGER",
+    wide: false,
+  },
+];
 
 export default function FeaturesBento() {
-    const features = [
-        {
-            title: "Smart Resume Parse",
-            description: "Extract essential skills and experience automatically with superhuman precision.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-neural-blue/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80" alt="Resume Parse" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <FileText className="h-4 w-4 text-neural-blue" />,
-        },
-        {
-            title: "Skill Gap Analysis",
-            description: "Identify exactly what you need to learn to land your dream role.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-synapse-purple/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Data Analysis" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <Target className="h-4 w-4 text-synapse-purple" />,
-        },
-        {
-            title: "Personalized Roadmaps",
-            description: "Step-by-step guidance tailored to your unique career trajectory.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-blue-500/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80" alt="Workflow Path" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <Map className="h-4 w-4 text-blue-400" />,
-        },
-        {
-            title: "AI Study Buddy",
-            description: "24/7 intelligent companion to answer technical questions and guide learning.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-emerald-500/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80" alt="AI Neural Network" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <MessageSquareText className="h-4 w-4 text-emerald-400" />,
-        },
-        {
-            title: "Interview Prep",
-            description: "Mock technical interviews and behavioral questions with instant feedback.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-rose-500/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80" alt="Tech Interview" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <Video className="h-4 w-4 text-rose-400" />,
-        },
-        {
-            title: "Growth Analytics",
-            description: "Track your progress visually and celebrate your career milestones.",
-            header: (
-                <div className="flex flex-1 w-full h-full min-h-[10rem] rounded-xl overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-amber-500/20 mix-blend-overlay z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Analytics Chart" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-            ),
-            icon: <LineChart className="h-4 w-4 text-amber-400" />,
-        },
-    ];
+  return (
+    <section id="features" className="relative py-24">
+      <div className="container mx-auto max-w-6xl px-4">
+        <div className="mb-14">
+          <ChapterLabel index="01" title="The Index" className="mb-6 max-w-md" />
+          <h2 className="max-w-2xl font-serif text-4xl font-black leading-tight tracking-tight text-ink md:text-6xl">
+            Everything the logbook keeps{" "}
+            <span className="relative inline-block text-stamp">
+              between its covers
+              <svg viewBox="0 0 260 40" preserveAspectRatio="none" fill="none" aria-hidden className="absolute -bottom-1 left-0 h-3 w-full">
+                <path
+                  d="M3 16 C 40 8, 110 7, 197 12 C 220 13, 232 12, 242 8"
+                  stroke="hsl(var(--stamp) / 0.7)"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            .
+          </h2>
+          <p className="mt-5 max-w-xl text-lg text-ink-2">
+            Six instruments, bound together. Each one earns its page in your
+            career archive.
+          </p>
+        </div>
 
-    return (
-        <section id="features" className="py-24 relative overflow-hidden bg-black/50">
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-            <div className="container px-4 mx-auto relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
-                        Accelerate with <span className="text-gradient">AI Superpowers</span>
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Everything you need to navigate the tech industry, powered by the most advanced LLMs.
-                    </p>
-                </div>
-                <BentoGrid className="max-w-6xl mx-auto">
-                    {features.map((item, i) => (
-                        <BentoGridItem
-                            key={i}
-                            title={item.title}
-                            description={item.description}
-                            header={item.header}
-                            icon={item.icon}
-                            className={i === 0 || i === 3 ? "md:col-span-2" : ""}
-                        />
-                    ))}
-                </BentoGrid>
-            </div>
-        </section>
-    );
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {features.map((f, i) => (
+            <motion.article
+              key={f.index}
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-8% 0px" }}
+              transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
+              className={cn(
+                "group relative flex flex-col border border-ink/15 bg-paper-2 p-5 shadow-[6px_6px_0_-2px_hsl(var(--ink))] transition-all duration-300 hover:-translate-y-1 hover:shadow-[9px_10px_0_-2px_hsl(var(--ink))]",
+                f.wide && "md:col-span-2",
+                i % 2 === 0 ? "md:rotate-[0.3deg]" : "md:-rotate-[0.3deg]"
+              )}
+            >
+              <Tape className="-top-3 left-1/2 -translate-x-1/2" angle={i % 2 ? 3 : -3} />
+
+              {/* Kept Unsplash photo, restyled as a vintage clipping */}
+              <div className="relative mb-5 overflow-hidden border border-ink/20 bg-ink/5">
+                <img
+                  src={f.image}
+                  alt={f.title}
+                  loading="lazy"
+                  className="img-plate h-44 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
+                <span className="absolute bottom-2 left-2 bg-paper-2/90 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-ink-2">
+                  {f.caption}
+                </span>
+              </div>
+
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-serif text-2xl font-bold leading-snug text-ink">
+                  {f.title}
+                </h3>
+                <span className="mt-1 font-mono text-xs text-stamp">{f.index}</span>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                {f.description}
+              </p>
+              <div className="mt-4 border-t border-dashed border-ink/20 pt-3 text-ink-2">
+                {f.icon}
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

@@ -2,10 +2,11 @@
 
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileText, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Upload, FileText, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { uploadResume } from '@/lib/apiClient';
-import { Card } from '@/components/ui/card';
+import Stamp from './logbook/Stamp';
+import Tape from './logbook/Tape';
 
 interface ResumeUploaderProps {
   onUploadComplete: (data: any) => void;
@@ -29,7 +30,7 @@ export default function ResumeUploader({ onUploadComplete }: ResumeUploaderProps
       setUploadStatus('success');
       setTimeout(() => {
         onUploadComplete(result);
-      }, 1000);
+      }, 1200);
     } catch (error) {
       console.error(error);
       setUploadStatus('error');
@@ -47,90 +48,141 @@ export default function ResumeUploader({ onUploadComplete }: ResumeUploaderProps
   });
 
   return (
-    <Card className="p-0 border-0 bg-transparent shadow-none w-full max-w-2xl mx-auto">
+    <div className="relative mx-auto w-full max-w-2xl">
+      <Tape className="-top-3 left-12" angle={-4} />
+      <Tape className="-top-3 right-12" angle={5} />
+
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="border-2 border-ink bg-paper-2 shadow-[8px_10px_0_-3px_hsl(var(--ink))]"
       >
+        {/* Receipt header */}
+        <div className="flex items-center justify-between border-b-2 border-dashed border-ink/40 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center bg-ink font-serif text-xs font-black text-paper-2">
+              R
+            </span>
+            <div>
+              <p className="font-serif text-lg font-bold leading-tight text-ink">
+                The Receipt
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
+                attach your résumé
+              </p>
+            </div>
+          </div>
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2 sm:block">
+            No. ______ · pdf
+          </span>
+        </div>
+
         <div
           {...getRootProps()}
-          className={`
-            relative overflow-hidden rounded-3xl p-12 text-center cursor-pointer
-            border border-white/10
-            backdrop-blur-xl bg-white/5
-            transition-all duration-500 ease-out
-            group
-            ${isDragActive ? 'border-neural-blue/50 bg-neural-blue/10 ring-2 ring-neural-blue/20 scale-[1.02]' : 'hover:border-white/20 hover:bg-white/10'}
-          `}
+          className={`group relative cursor-pointer px-8 py-14 text-center transition-all duration-300 sm:px-12 ${
+            isDragActive
+              ? 'bg-stamp/10'
+              : uploadStatus === 'error'
+                ? 'bg-stamp/5'
+                : 'hover:bg-paper'
+          }`}
         >
-          {/* Subtle Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-neural-blue/10 via-transparent to-synapse-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
           <input {...getInputProps()} />
 
-          <div className="relative z-10 flex flex-col items-center justify-center min-h-[200px]">
+          {/* Perforation line */}
+          <div className="pointer-events-none absolute inset-x-4 top-1/2 hidden h-px border-t border-dashed border-ink/20 sm:block" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink/30 bg-paper-2 sm:block" />
+
+          <AnimatePresence mode="wait">
             {uploading ? (
               <motion.div
+                key="loading"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-col items-center"
+                exit={{ opacity: 0 }}
+                className="relative z-10 flex flex-col items-center"
               >
                 <div className="relative mb-6">
-                  <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-neural-blue" />
-                  <FileText className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white" size={28} />
+                  <div className="h-20 w-20 animate-spin rounded-full border-2 border-ink/20 border-t-stamp" />
+                  <FileText className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 text-ink" />
                 </div>
-                <p className="text-xl font-medium text-white mb-2">Analyzing Profile...</p>
-                <p className="text-sm text-white/50">{fileName}</p>
+                <p className="font-serif text-2xl font-bold text-ink">
+                  Parsing the fine print<span className="blink-cursor" />
+                </p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.2em] text-ink-2">
+                  {fileName}
+                </p>
               </motion.div>
             ) : uploadStatus === 'success' ? (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="flex flex-col items-center"
+                key="success"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="relative z-10 flex flex-col items-center"
               >
-                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mb-6">
-                  <CheckCircle className="text-green-400" size={40} />
+                <div className="mb-6 flex h-20 w-20 items-center justify-center border-2 border-ink bg-paper-2 shadow-[4px_4px_0_0_hsl(var(--ink))]">
+                  <FileText className="h-8 w-8 text-stamp" />
                 </div>
-                <p className="text-xl font-medium text-white">Success!</p>
+                <p className="font-serif text-3xl font-bold text-ink">
+                  Your dossier has been opened.
+                </p>
+                <Stamp tone="red" animate className="mt-6">
+                  Received
+                </Stamp>
               </motion.div>
             ) : uploadStatus === 'error' ? (
               <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="flex flex-col items-center"
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="relative z-10 flex flex-col items-center"
               >
-                <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
-                  <XCircle className="text-red-400" size={40} />
-                </div>
-                <p className="text-xl font-medium text-white mb-2">Upload Failed</p>
-                <p className="text-sm text-white/50">Please try again</p>
+                <p className="font-serif text-2xl font-bold text-ink">
+                  We couldn&apos;t read that page.
+                </p>
+                <p className="mt-1 text-sm text-ink-2">
+                  Please try again — or check the file is a valid PDF under 10 MB.
+                </p>
+                <Stamp tone="red" animate className="mt-6">
+                  Return to sender
+                </Stamp>
               </motion.div>
             ) : (
               <motion.div
-                className="flex flex-col items-center"
+                key="idle"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="relative z-10 flex flex-col items-center"
               >
-                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-white/10 to-white/5 border border-white/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
-                  <Upload className="text-white group-hover:text-neural-blue transition-colors duration-300" size={40} />
+                <div className="mb-7 flex h-24 w-24 items-center justify-center border-2 border-dashed border-ink/40 bg-paper transition-all duration-300 group-hover:border-stamp group-hover:shadow-[4px_4px_0_0_hsl(var(--stamp))]">
+                  <Upload className="h-9 w-9 text-ink transition-colors group-hover:text-stamp" strokeWidth={1.6} />
                 </div>
 
-                <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">
-                  Upload Resume
+                <h3 className="font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                  Drop your résumé here
                 </h3>
+                <p className="mt-3 max-w-sm text-ink-2">
+                  or click to browse. We read it once, file it, and never lend
+                  it out.
+                </p>
 
-                <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 group-hover:bg-neural-blue group-hover:border-neural-blue group-hover:text-white transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-                  <span className="text-sm font-medium">Click to Browse or Drag File</span>
-                  <ArrowRight size={16} />
+                <div className="btn-hard mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-paper-2">
+                  Choose file
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </div>
 
-                <p className="mt-8 text-xs text-white/30 uppercase tracking-widest font-medium">
-                  PDF Format Only • Max 10MB
+                <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.26em] text-ink-2">
+                  pdf only · max 10mb
                 </p>
               </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         </div>
       </motion.div>
-    </Card>
+    </div>
   );
 }

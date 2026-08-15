@@ -30,20 +30,19 @@ export default function Floating3DCube({
         right,
         bottom,
         transformStyle: 'preserve-3d',
-        animation: `rotate3d ${animationDuration}s linear infinite, float 6s ease-in-out infinite`,
+        animation: `rotate3d ${animationDuration}s linear infinite, float 7s ease-in-out infinite`,
         animationDelay: `${delay}s`,
         zIndex: 1,
+        opacity: 0.5,
     };
 
     const faceStyle: CSSProperties = {
         position: 'absolute',
         width: '100%',
         height: '100%',
-        background: 'rgba(168, 85, 247, 0.1)',
-        border: '2px solid rgba(168, 85, 247, 0.3)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: '0 0 20px rgba(168, 85, 247, 0.2)',
+        background: 'hsl(var(--paper-2) / 0.5)',
+        border: '1.5px solid hsl(var(--ink) / 0.35)',
+        boxShadow: '0 0 0 1px hsl(var(--paper) / 0.4)',
     };
 
     return (

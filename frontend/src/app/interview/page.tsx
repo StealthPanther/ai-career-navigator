@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, TrendingUp, Clock, Award } from 'lucide-react';
+import { ArrowRight, CheckCircle, Award, ArrowLeft } from 'lucide-react';
 import { generateInterview, submitInterview } from '@/lib/apiClient';
+import Cursor from '@/components/logbook/Cursor';
+import ChapterLabel from '@/components/logbook/ChapterLabel';
+import Stamp from '@/components/logbook/Stamp';
+import Tape from '@/components/logbook/Tape';
 
 interface InterviewQuestion {
     question: string;
@@ -111,279 +114,396 @@ export default function InterviewPage() {
         }
     };
 
-    const getCategoryBadge = (category: string) => {
+    const getCategoryTone = (category: string) => {
         const colors: Record<string, string> = {
-            technical: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
-            behavioral: 'bg-green-500/20 text-green-400 border-green-500/50',
-            system_design: 'bg-purple-500/20 text-purple-400 border-purple-500/50'
+            technical: 'text-seal border-seal/60',
+            behavioral: 'text-ink border-ink/60',
+            system_design: 'text-plum border-plum/60'
         };
-        return colors[category] || 'bg-gray-500/20 text-gray-400 border-gray-500/50';
+        return colors[category] || 'text-ink-2 border-ink/40';
     };
 
-    const getDifficultyColor = (diff: string) => {
+    const getDifficultyTone = (diff: string) => {
         const colors: Record<string, string> = {
-            easy: 'text-green-400',
-            medium: 'text-yellow-400',
-            hard: 'text-red-400'
+            easy: 'text-ink',
+            medium: 'text-seal',
+            hard: 'text-stamp'
         };
-        return colors[diff] || 'text-gray-400';
+        return colors[diff] || 'text-ink-2';
     };
 
-    // Setup View
-    if (stage === 'setup') {
-        return (
-            <div className="min-h-screen bg-black p-8">
-                {/* Back Button */}
-                <div className="absolute top-8 left-8 z-20">
-                    <a
-                        href="/"
-                        className="px-4 py-2 rounded-lg glass-panel border border-white/10 hover:border-primary/30 transition-all flex items-center gap-2 text-foreground hover:text-primary font-medium"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <path d="m12 19-7-7 7-7" />
-                            <path d="M19 12H5" />
-                        </svg>
-                        Back
-                    </a>
-                </div>
+    const pageShell = (children: React.ReactNode, title: string, sub: string) => (
+        <main className="relative min-h-screen bg-paper font-sans text-ink selection:bg-stamp selection:text-paper-2">
+            <Cursor />
+            {/* ink washes */}
+            <div className="pointer-events-none fixed -left-40 top-1/4 h-[30rem] w-[30rem] rounded-full bg-seal/10 blur-3xl" />
+            <div className="pointer-events-none fixed -right-40 bottom-0 h-[28rem] w-[28rem] rounded-full bg-stamp/10 blur-3xl" />
 
-                <div className="max-w-2xl mx-auto">
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                        <h1 className="text-4xl font-bold text-white mb-2">Interview Prep</h1>
-                        <p className="text-gray-400 mb-8">Practice with AI-powered interview questions</p>
-
-                        <Card className="p-8 bg-black/40 backdrop-blur-xl border-2 border-primary/30">
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-white mb-2">Target Role</label>
-                                    <input
-                                        type="text"
-                                        value={targetRole}
-                                        onChange={(e) => setTargetRole(e.target.value)}
-                                        placeholder="e.g., Full Stack Developer"
-                                        className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-white mb-2">Difficulty</label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {['easy', 'medium', 'hard'].map((diff) => (
-                                            <button
-                                                key={diff}
-                                                onClick={() => setDifficulty(diff)}
-                                                className={`py-3 rounded-lg font-medium transition-all ${difficulty === diff
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                                                    }`}
-                                            >
-                                                {diff.charAt(0).toUpperCase() + diff.slice(1)}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-white mb-2">
-                                        Number of Questions: {questionCount}
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="3"
-                                        max="10"
-                                        value={questionCount}
-                                        onChange={(e) => setQuestionCount(parseInt(e.target.value))}
-                                        className="w-full"
-                                    />
-                                </div>
-
-                                <Button
-                                    onClick={startInterview}
-                                    disabled={loading || !targetRole.trim()}
-                                    className="w-full py-6 bg-primary hover:bg-primary/90 text-lg font-semibold"
-                                >
-                                    {loading ? 'Generating Questions...' : 'Start Interview'}
-                                    <ArrowRight className="ml-2" />
-                                </Button>
-                            </div>
-                        </Card>
-                    </motion.div>
-                </div>
+            {/* Back button */}
+            <div className="fixed left-6 top-6 z-20">
+                <a
+                    href="/dashboard"
+                    className="btn-hard inline-flex items-center gap-2 bg-paper-2 px-4 py-2.5 border-2 border-ink font-mono text-[11px] uppercase tracking-[0.2em] text-ink transition-colors hover:text-stamp"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    The Dossier
+                </a>
             </div>
-        );
-    }
 
-    // Practice View
-    if (stage === 'practice') {
-        const currentQuestion = questions[currentIndex];
+            <div className="container relative mx-auto max-w-3xl px-4 py-20">
+                <div className="mb-10">
+                    <ChapterLabel index="04" title="The Examination" className="mb-5 max-w-sm" />
+                    <h1 className="font-serif text-4xl font-black tracking-tight text-ink md:text-6xl">
+                        {title}
+                    </h1>
+                    <p className="mt-3 text-lg text-ink-2">{sub}</p>
+                </div>
+                {children}
+            </div>
+        </main>
+    );
 
-        return (
-            <div className="min-h-screen bg-black p-8">
-                <div className="max-w-4xl mx-auto">
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-4">
-                            <h1 className="text-2xl font-bold text-white">
-                                Question {currentIndex + 1} of {questions.length}
-                            </h1>
-                            <div className="text-sm text-gray-400">
-                                Progress: {Math.round(((currentIndex + 1) / questions.length) * 100)}%
-                            </div>
-                        </div>
-                        <div className="w-full bg-white/10 rounded-full h-2">
-                            <div
-                                className="bg-primary h-2 rounded-full transition-all"
-                                style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
-                            />
+    // ── SETUP ──
+    if (stage === 'setup') {
+        return pageShell(
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                <div className="relative border-2 border-ink bg-paper-2 shadow-[8px_10px_0_-4px_hsl(var(--ink))]">
+                    <Tape className="-top-3 left-10" angle={-4} />
+                    <div className="border-b-2 border-ink px-7 py-4">
+                        <div className="flex items-center justify-between">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-ink-2">
+                                examination paper · form A
+                            </p>
+                            <Stamp tone="red" className="hidden sm:inline-block">Private &amp; confidential</Stamp>
                         </div>
                     </div>
 
-                    <Card className="p-8 bg-black/40 backdrop-blur-xl border-2 border-primary/30">
-                        <div className="flex gap-3 mb-6">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryBadge(currentQuestion.category)}`}>
-                                {currentQuestion.category.replace('_', ' ').toUpperCase()}
-                            </span>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(currentQuestion.difficulty)}`}>
-                                {currentQuestion.difficulty.toUpperCase()}
-                            </span>
+                    <div className="space-y-8 px-7 py-8">
+                        {/* Target role */}
+                        <div>
+                            <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.24em] text-ink">
+                                Examinee — target role
+                            </label>
+                            <input
+                                type="text"
+                                value={targetRole}
+                                onChange={(e) => setTargetRole(e.target.value)}
+                                placeholder="e.g., Full Stack Developer"
+                                className="w-full border-2 border-ink/25 bg-paper px-4 py-3.5 text-ink placeholder:text-ink-2/60 focus:border-stamp focus:outline-none"
+                            />
                         </div>
 
-                        <h2 className="text-2xl font-semibold text-white mb-6">{currentQuestion.question}</h2>
+                        {/* Difficulty */}
+                        <div>
+                            <label className="mb-3 block font-mono text-[11px] uppercase tracking-[0.24em] text-ink">
+                                Difficulty
+                            </label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {['easy', 'medium', 'hard'].map((diff) => (
+                                    <button
+                                        key={diff}
+                                        onClick={() => setDifficulty(diff)}
+                                        className={`border-2 px-4 py-3.5 font-mono text-xs uppercase tracking-[0.22em] transition-all duration-300 ${
+                                            difficulty === diff
+                                                ? 'border-ink bg-ink text-paper-2 shadow-[4px_4px_0_0_hsl(var(--stamp))]'
+                                                : 'border-ink/25 bg-paper text-ink-2 hover:border-ink/60 hover:text-ink'
+                                        }`}
+                                    >
+                                        {diff.charAt(0).toUpperCase() + diff.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Question count */}
+                        <div>
+                            <div className="mb-3 flex items-baseline justify-between">
+                                <label className="font-mono text-[11px] uppercase tracking-[0.24em] text-ink">
+                                    Number of questions
+                                </label>
+                                <span className="font-serif text-4xl font-black leading-none text-stamp">
+                                    {questionCount}
+                                </span>
+                            </div>
+                            <input
+                                type="range"
+                                min="3"
+                                max="10"
+                                value={questionCount}
+                                onChange={(e) => setQuestionCount(parseInt(e.target.value))}
+                                className="w-full accent-[hsl(var(--stamp))]"
+                            />
+                            <div className="mt-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] text-ink-2">
+                                <span>3</span><span>10</span>
+                            </div>
+                        </div>
+
+                        <Button
+                            onClick={startInterview}
+                            disabled={loading || !targetRole.trim()}
+                            className="btn-hard group h-auto w-full bg-ink px-6 py-5 font-sans text-sm font-semibold uppercase tracking-[0.26em] text-paper-2 hover:bg-ink disabled:opacity-50"
+                        >
+                            {loading ? 'Setting the paper…' : 'Begin examination'}
+                            <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                    </div>
+                </div>
+
+                <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
+                    open book · open notes · the buddy stays in the margin
+                </p>
+            </motion.div>,
+            'Sit for the exam.',
+            'Three degrees of difficulty, up to ten questions, examiner\'s remarks on every answer.'
+        );
+    }
+
+    // ── PRACTICE ──
+    if (stage === 'practice') {
+        const currentQuestion = questions[currentIndex];
+        const progress = Math.round(((currentIndex + 1) / questions.length) * 100);
+
+        return pageShell(
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                {/* Progress rule */}
+                <div className="mb-8">
+                    <div className="mb-2 flex items-baseline justify-between">
+                        <p className="font-serif text-xl font-bold text-ink">
+                            Question {currentIndex + 1} of {questions.length}
+                        </p>
+                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-stamp">
+                            {progress}% complete
+                        </p>
+                    </div>
+                    <div className="relative h-3 border border-ink bg-paper">
+                        <div className="h-full bg-ink transition-all duration-500" style={{ width: `${progress}%` }} />
+                        {[25, 50, 75].map((t) => (
+                            <span key={t} className="absolute inset-y-0 w-px bg-paper" style={{ left: `${t}%` }} />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="relative border-2 border-ink bg-paper-2 shadow-[8px_10px_0_-4px_hsl(var(--stamp))]">
+                    <Tape className="-top-3 right-12" angle={4} />
+
+                    <div className="border-b-2 border-ink px-7 py-4">
+                        <div className="flex flex-wrap gap-3">
+                            <Stamp tone="ink" flat className="text-[9px]!">
+                                {currentQuestion.category.replace('_', ' ')}
+                            </Stamp>
+                            <Stamp
+                                tone={currentQuestion.difficulty === 'easy' ? 'ink' : currentQuestion.difficulty === 'medium' ? 'blue' : 'red'}
+                                flat
+                                className="text-[9px]!"
+                            >
+                                {currentQuestion.difficulty}
+                            </Stamp>
+                        </div>
+                    </div>
+
+                    <div className="space-y-6 px-7 py-7">
+                        <h2 className="font-serif text-2xl font-bold leading-snug text-ink md:text-3xl">
+                            {currentQuestion.question}
+                        </h2>
 
                         {currentQuestion.sample_answer_hints && (
-                            <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                                <p className="text-sm text-blue-300">
-                                    <strong>Hint:</strong> {currentQuestion.sample_answer_hints}
+                            <div className="border-2 border-dashed border-seal/50 bg-seal/5 px-4 py-3">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-seal">
+                                    Examiner&apos;s note
+                                </p>
+                                <p className="mt-1 text-sm text-ink-2">
+                                    {currentQuestion.sample_answer_hints}
                                 </p>
                             </div>
                         )}
 
-                        <textarea
-                            value={answers[currentIndex]}
-                            onChange={(e) => {
-                                const newAnswers = [...answers];
-                                newAnswers[currentIndex] = e.target.value;
-                                setAnswers(newAnswers);
-                            }}
-                            placeholder="Type your answer here..."
-                            className="w-full h-64 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 resize-none"
-                        />
+                        <div>
+                            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
+                                Your answer — write on the lines
+                            </p>
+                            <textarea
+                                value={answers[currentIndex]}
+                                onChange={(e) => {
+                                    const newAnswers = [...answers];
+                                    newAnswers[currentIndex] = e.target.value;
+                                    setAnswers(newAnswers);
+                                }}
+                                placeholder="Begin your answer…"
+                                className="paper-ruled h-64 w-full resize-none border border-ink/25 bg-paper px-4 py-1 text-ink placeholder:text-ink-2/50 focus:border-stamp focus:outline-none"
+                            />
+                        </div>
 
-                        <div className="flex justify-between mt-6">
+                        <div className="flex justify-between pt-2">
                             <Button
                                 onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
                                 disabled={currentIndex === 0}
                                 variant="outline"
-                                className="border-white/20"
+                                className="h-auto border-2 border-ink/30 bg-paper px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-ink hover:bg-paper disabled:opacity-40"
                             >
                                 Previous
                             </Button>
 
                             {currentIndex < questions.length - 1 ? (
-                                <Button onClick={() => setCurrentIndex(currentIndex + 1)} className="bg-primary hover:bg-primary/90">
+                                <Button
+                                    onClick={() => setCurrentIndex(currentIndex + 1)}
+                                    className="btn-hard h-auto bg-ink px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-paper-2 hover:bg-ink"
+                                >
                                     Next
-                                    <ArrowRight className="ml-2" size={16} />
+                                    <ArrowRight className="ml-2" size={15} />
                                 </Button>
                             ) : (
-                                <Button onClick={submitAnswers} disabled={loading} className="bg-green-600 hover:bg-green-700">
-                                    {loading ? 'Evaluating...' : 'Submit for Evaluation'}
-                                    <CheckCircle className="ml-2" size={16} />
+                                <Button
+                                    onClick={submitAnswers}
+                                    disabled={loading}
+                                    className="btn-hard h-auto bg-stamp px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-paper-2 hover:bg-stamp"
+                                >
+                                    {loading ? 'Marking…' : 'Submit for review'}
+                                    <CheckCircle className="ml-2" size={15} />
                                 </Button>
                             )}
                         </div>
-                    </Card>
+                    </div>
                 </div>
-            </div>
+            </motion.div>,
+            'Answer the paper.',
+            'Take your time. The examiner reads everything — twice.'
         );
     }
 
-    // Results View
+    // ── RESULTS ──
     if (stage === 'results' && results) {
-        return (
-            <div className="min-h-screen bg-black p-8">
-                <div className="max-w-5xl mx-auto">
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        <div className="text-center mb-8">
-                            <Award className="w-16 h-16 text-primary mx-auto mb-4" />
-                            <h1 className="text-4xl font-bold text-white mb-2">Interview Complete!</h1>
-                            <div className="text-6xl font-bold text-primary my-4">{results.overall_score}%</div>
-                            <p className="text-gray-400">Overall Score</p>
+        const passed = results.overall_score >= 70;
+
+        return pageShell(
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                {/* Report card header */}
+                <div className="relative mb-8 border-2 border-ink bg-paper-2 p-8 text-center shadow-[8px_10px_0_-4px_hsl(var(--ink))]">
+                    <Tape className="-top-3 left-1/2 -translate-x-1/2" angle={-2} />
+                    <Award className="mx-auto mb-4 h-12 w-12 text-gold" strokeWidth={1.4} />
+                    <h2 className="font-serif text-3xl font-black text-ink">Examination complete.</h2>
+
+                    <div className="mt-6 flex items-center justify-center gap-8">
+                        <div>
+                            <div className="font-serif text-7xl font-black leading-none text-ink">
+                                {results.overall_score}
+                                <span className="text-2xl text-stamp">%</span>
+                            </div>
+                            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-ink-2">
+                                overall mark
+                            </p>
                         </div>
-
-                        <div className="space-y-6">
-                            {results.questions.map((q: QuestionWithAnswer, idx: number) => (
-                                <Card key={idx} className="p-6 bg-black/40 backdrop-blur-xl border-2 border-white/10">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex-1">
-                                            <div className="flex gap-2 mb-2">
-                                                <span className={`px-2 py-1 rounded text-xs font-medium border ${getCategoryBadge(q.category)}`}>
-                                                    {q.category}
-                                                </span>
-                                            </div>
-                                            <h3 className="text-lg font-semibold text-white mb-2">{q.question}</h3>
-                                        </div>
-                                        <div className="text-2xl font-bold text-primary ml-4">{q.score}/10</div>
-                                    </div>
-
-                                    <div className="mb-4 p-3 bg-white/5 rounded-lg">
-                                        <p className="text-sm text-gray-300"><strong>Your Answer:</strong> {q.user_answer || 'No answer provided'}</p>
-                                    </div>
-
-                                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-3">
-                                        <p className="text-sm text-blue-200"><strong>AI Feedback:</strong> {q.ai_feedback}</p>
-                                    </div>
-
-                                    {q.strengths && q.strengths.length > 0 && (
-                                        <div className="mb-2">
-                                            <p className="text-sm font-semibold text-green-400 mb-1">Strengths:</p>
-                                            <ul className="list-disc list-inside text-sm text-gray-300">
-                                                {q.strengths.map((s, i) => (
-                                                    <li key={i}>{s}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-
-                                    {q.improvements && q.improvements.length > 0 && (
-                                        <div>
-                                            <p className="text-sm font-semibold text-yellow-400 mb-1">Areas to Improve:</p>
-                                            <ul className="list-disc list-inside text-sm text-gray-300">
-                                                {q.improvements.map((i, idx) => (
-                                                    <li key={idx}>{i}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </Card>
-                            ))}
+                        <div className="h-16 w-px bg-ink/20" />
+                        <div className="text-left">
+                            <Stamp tone={passed ? 'red' : 'ink'} animate>
+                                {passed ? 'Passed' : 'Conditional'}
+                            </Stamp>
+                            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-2">
+                                {results.total_questions} questions marked
+                            </p>
                         </div>
-
-                        <div className="flex gap-4 mt-8 justify-center">
-                            <Button
-                                onClick={() => {
-                                    setStage('setup');
-                                    setQuestions([]);
-                                    setAnswers([]);
-                                    setCurrentIndex(0);
-                                    setResults(null);
-                                }}
-                                className="bg-primary hover:bg-primary/90"
-                            >
-                                Try Again
-                            </Button>
-                        </div>
-                    </motion.div>
+                    </div>
                 </div>
-            </div>
+
+                {/* Per-question reports */}
+                <div className="space-y-6">
+                    {results.questions.map((q: QuestionWithAnswer, idx: number) => (
+                        <div key={idx} className="border border-ink/20 bg-paper-2 p-6">
+                            <div className="mb-4 flex items-start justify-between gap-4">
+                                <div>
+                                    <div className="mb-1.5 flex flex-wrap gap-2">
+                                        <Stamp tone="ink" flat className="text-[8px]!">
+                                            {q.category.replace('_', ' ')}
+                                        </Stamp>
+                                        <Stamp
+                                            tone={q.difficulty === 'easy' ? 'ink' : q.difficulty === 'medium' ? 'blue' : 'red'}
+                                            flat
+                                            className="text-[8px]!"
+                                        >
+                                            {q.difficulty}
+                                        </Stamp>
+                                    </div>
+                                    <h3 className="font-serif text-lg font-bold leading-snug text-ink">
+                                        {q.question}
+                                    </h3>
+                                </div>
+                                <span className="shrink-0 border-2 border-ink bg-paper px-3 py-2 font-mono text-xl font-bold text-stamp shadow-[3px_3px_0_0_hsl(var(--ink))]">
+                                    {q.score}/10
+                                </span>
+                            </div>
+
+                            <div className="mb-3 border border-ink/20 bg-paper px-4 py-3">
+                                <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink-2">
+                                    Your answer
+                                </p>
+                                <p className="mt-1 text-sm text-ink">
+                                    {q.user_answer || '— no answer given —'}
+                                </p>
+                            </div>
+
+                            {q.ai_feedback && (
+                                <div className="mb-4 border-2 border-dashed border-seal/50 bg-seal/5 px-4 py-3">
+                                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-seal">
+                                        Examiner&apos;s remarks
+                                    </p>
+                                    <p className="mt-1 text-sm text-ink-2">{q.ai_feedback}</p>
+                                </div>
+                            )}
+
+                            {(q.strengths?.length || q.improvements?.length) && (
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    {q.strengths && q.strengths.length > 0 && (
+                                        <div className="border border-ink/15 bg-paper p-3">
+                                            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.22em] text-stamp">
+                                                Strengths
+                                            </p>
+                                            <ul className="space-y-1 text-sm text-ink-2">
+                                                {q.strengths.map((s, i) => (
+                                                    <li key={i} className="flex gap-2">
+                                                        <span className="text-stamp">+</span>
+                                                        {s}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {q.improvements && q.improvements.length > 0 && (
+                                        <div className="border border-ink/15 bg-paper p-3">
+                                            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.22em] text-seal">
+                                                To revise
+                                            </p>
+                                            <ul className="space-y-1 text-sm text-ink-2">
+                                                {q.improvements.map((i, idx2) => (
+                                                    <li key={idx2} className="flex gap-2">
+                                                        <span className="text-seal">→</span>
+                                                        {i}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="mt-8 flex justify-center">
+                    <Button
+                        onClick={() => {
+                            setStage('setup');
+                            setQuestions([]);
+                            setAnswers([]);
+                            setCurrentIndex(0);
+                            setResults(null);
+                        }}
+                        className="btn-hard h-auto bg-ink px-10 py-4 font-sans text-xs font-semibold uppercase tracking-[0.24em] text-paper-2 hover:bg-ink"
+                    >
+                        Sit again
+                    </Button>
+                </div>
+            </motion.div>,
+            'The report card.',
+            'Filed in the back of your logbook. Revise, then return for round two.'
         );
     }
 

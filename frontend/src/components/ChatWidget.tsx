@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Trash2 } from 'lucide-react';
+import { MessageCircle, X, Send, Trash2, Feather } from 'lucide-react';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -18,6 +17,7 @@ interface ChatWidgetProps {
 }
 
 import { chatWithAI, getChatHistory, clearChatHistory as apiClearHistory } from '@/lib/apiClient';
+import Tape from './logbook/Tape';
 
 export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -98,45 +98,60 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
 
     return (
         <>
-            {/* Floating Button */}
+            {/* Floating button */}
             {!isOpen && (
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="fixed bottom-8 right-8 z-9999"
+                    className="fixed bottom-8 right-8 z-[99]"
                 >
                     <Button
                         onClick={() => setIsOpen(true)}
-                        className="w-16 h-16 rounded-full bg-neural-blue hover:bg-blue-600 shadow-2xl shadow-[0_0_15px_rgba(59,130,246,0.5)] border-2 border-neural-blue/30"
+                        data-cursor="marginalia"
+                        className="btn-hard group h-16 w-16 rounded-none border-2 border-ink bg-paper-2 hover:bg-paper-2"
                     >
-                        <MessageCircle size={28} />
+                        <Feather className="h-7 w-7 text-stamp transition-transform group-hover:-rotate-12" strokeWidth={1.6} />
                     </Button>
+                    <span className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-ink px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.2em] text-paper-2">
+                        marginalia
+                    </span>
                 </motion.div>
             )}
 
-            {/* Chat Window */}
+            {/* Chat window */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-8 right-8 z-9999 w-96 h-[600px]"
+                        initial={{ opacity: 0, y: 20, rotate: 1 }}
+                        animate={{ opacity: 1, y: 0, rotate: 0 }}
+                        exit={{ opacity: 0, y: 20, rotate: 1 }}
+                        className="fixed bottom-8 right-8 z-[99] w-[calc(100vw-2rem)] max-w-96 h-[600px]"
                     >
-                        <Card className="h-full flex flex-col backdrop-blur-xl bg-black/80 border-2 border-neural-blue/30 shadow-2xl shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                        <div className="relative flex h-full flex-col border-2 border-ink bg-paper-2 shadow-[8px_10px_0_-4px_hsl(var(--stamp))]">
+                            <Tape className="-top-3 left-1/2 -translate-x-1/2" angle={-3} />
+
                             {/* Header */}
-                            <div className="p-4 border-b border-white/10 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <MessageCircle className="text-neural-blue" size={24} />
-                                    <h3 className="font-bold text-lg text-foreground">AI Study Buddy</h3>
+                            <div className="flex items-center justify-between border-b-2 border-ink px-5 py-4">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex h-9 w-9 items-center justify-center border-2 border-ink bg-paper text-stamp">
+                                        <Feather className="h-4 w-4" strokeWidth={1.6} />
+                                    </span>
+                                    <div>
+                                        <h3 className="font-serif text-lg font-bold leading-tight text-ink">
+                                            The Study Buddy
+                                        </h3>
+                                        <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-ink-2">
+                                            marginalia · live
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-1.5">
                                     {messages.length > 0 && (
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={clearHistory}
-                                            className="hover:bg-red-500/10"
+                                            className="rounded-none text-ink-2 hover:bg-stamp/10 hover:text-stamp"
                                         >
                                             <Trash2 size={16} />
                                         </Button>
@@ -145,6 +160,7 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => setIsOpen(false)}
+                                        className="rounded-none text-ink hover:bg-ink/10"
                                     >
                                         <X size={20} />
                                     </Button>
@@ -152,11 +168,12 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                             </div>
 
                             {/* Messages */}
-                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            <div className="flex-1 overflow-y-auto space-y-4 p-5">
                                 {messages.length === 0 ? (
-                                    <div className="text-center text-muted-foreground mt-8">
-                                        <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
-                                        <p className="text-sm">Ask me anything about your learning roadmap!</p>
+                                    <div className="mt-8 text-center text-ink-2">
+                                        <MessageCircle size={44} className="mx-auto mb-4 opacity-40" strokeWidth={1.4} />
+                                        <p className="font-serif text-lg text-ink">The margins are yours.</p>
+                                        <p className="mt-1 text-sm">Ask anything about your roadmap.</p>
                                     </div>
                                 ) : (
                                     messages.map((msg, idx) => (
@@ -165,23 +182,29 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                                             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                         >
                                             <div
-                                                className={`max-w-[80%] rounded-2xl px-4 py-2 ${msg.role === 'user'
-                                                    ? 'bg-neural-blue text-white'
-                                                    : 'bg-white/10 text-foreground'
-                                                    }`}
+                                                className={`max-w-[82%] px-4 py-2.5 text-sm leading-relaxed ${
+                                                    msg.role === 'user'
+                                                        ? 'border-2 border-ink bg-ink text-paper-2 shadow-[3px_3px_0_0_hsl(var(--stamp))]'
+                                                        : 'border border-ink/25 bg-paper text-ink'
+                                                }`}
                                             >
-                                                <p className="text-sm">{msg.message}</p>
+                                                {msg.role === 'assistant' && (
+                                                    <span className="mb-1 block font-mono text-[9px] uppercase tracking-[0.22em] text-stamp">
+                                                        marginalia
+                                                    </span>
+                                                )}
+                                                <p className="whitespace-pre-wrap">{msg.message}</p>
                                             </div>
                                         </div>
                                     ))
                                 )}
                                 {loading && (
                                     <div className="flex justify-start">
-                                        <div className="bg-white/10 rounded-2xl px-4 py-2">
-                                            <div className="flex gap-1">
-                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                <div className="w-2 h-2 bg-neural-blue rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                        <div className="border border-ink/25 bg-paper px-4 py-3">
+                                            <div className="flex gap-1.5">
+                                                <span className="h-2 w-2 animate-bounce rounded-full bg-ink" style={{ animationDelay: '0ms' }} />
+                                                <span className="h-2 w-2 animate-bounce rounded-full bg-ink" style={{ animationDelay: '150ms' }} />
+                                                <span className="h-2 w-2 animate-bounce rounded-full bg-ink" style={{ animationDelay: '300ms' }} />
                                             </div>
                                         </div>
                                     </div>
@@ -190,27 +213,27 @@ export default function ChatWidget({ userId, roadmapId }: ChatWidgetProps) {
                             </div>
 
                             {/* Input */}
-                            <div className="p-4 border-t border-white/10">
+                            <div className="border-t-2 border-ink p-4">
                                 <div className="flex gap-2">
                                     <input
                                         type="text"
                                         value={input}
                                         onChange={(e) => setInput(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                        placeholder="Ask me anything..."
-                                        className="flex-1 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground placeholder-muted-foreground focus:outline-none focus:border-neural-blue/50"
+                                        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                                        placeholder="Write in the margin…"
+                                        className="flex-1 border border-ink/30 bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-ink-2 focus:border-stamp focus:outline-none"
                                         disabled={loading}
                                     />
                                     <Button
                                         onClick={sendMessage}
                                         disabled={!input.trim() || loading}
-                                        className="px-4 bg-neural-blue hover:bg-blue-600"
+                                        className="btn-hard h-auto rounded-none border-2 border-ink bg-ink px-4 text-paper-2 hover:bg-ink disabled:opacity-40"
                                     >
-                                        <Send size={18} />
+                                        <Send size={17} />
                                     </Button>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -2,21 +2,21 @@
 
 export default function AnimatedBackground() {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-[#0F0A1F]">
-      {/* Deep Violet Base */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1a103c] via-[#0F0A1F] to-[#0a0510]" />
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-paper">
+      {/* Paper base */}
+      <div className="absolute inset-0 bg-gradient-to-br from-paper via-[#efe9d8] to-[#e9e2cf]" />
 
-      {/* Gold/Peach Orb - Top Left */}
-      <div className="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] bg-[#FFB088] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse-slow" />
+      {/* Warm amber wash — top left */}
+      <div className="absolute -left-[10%] -top-[10%] h-[50vw] w-[50vw] rounded-full bg-gold/25 mix-blend-multiply blur-[120px] animate-pulse-slow" />
 
-      {/* Purple/Blue Orb - Center/Right */}
-      <div className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] bg-[#7c3aed] rounded-full mix-blend-screen filter blur-[100px] opacity-15 animate-float-slow" />
+      {/* Seal blue wash — center/right */}
+      <div className="absolute right-[10%] top-[20%] h-[40vw] w-[40vw] rounded-full bg-seal/15 mix-blend-multiply blur-[100px] animate-drift" />
 
-      {/* Pink/Rose Orb - Bottom Left */}
-      <div className="absolute bottom-0 -left-[5%] w-[45vw] h-[45vw] bg-[#db2777] rounded-full mix-blend-screen filter blur-[130px] opacity-10" />
+      {/* Stamp red wash — bottom left */}
+      <div className="absolute -left-[5%] bottom-0 h-[45vw] w-[45vw] rounded-full bg-stamp/10 mix-blend-multiply blur-[130px]" />
 
-      {/* Subtle Noise Texture for premium feel */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      {/* Fine dot grid, like graph paper */}
+      <div className="absolute inset-0 opacity-[0.35] [background-image:radial-gradient(hsl(var(--ink)/0.12)_1px,transparent_1px)] [background-size:28px_28px]" />
     </div>
   );
 }
