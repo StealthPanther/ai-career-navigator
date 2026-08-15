@@ -86,6 +86,7 @@ export default function Home() {
     setTargetRole('');
     setSkillAnalysis(null);
     setRoadmap(null);
+    localStorage.removeItem('user_id');
   };
 
   return (
@@ -118,15 +119,23 @@ export default function Home() {
           </Link>
 
           {userId ? (
-            <a
-              href="/interview"
-              data-cursor="examine"
-              className="btn-hard inline-flex items-center gap-2 bg-seal px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper-2"
-            >
-              <GraduationCap className="h-4 w-4" />
-              The Examination
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
+            <div className="flex items-center gap-5">
+              <button
+                onClick={resetFlow}
+                className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-2 transition-colors hover:text-stamp"
+              >
+                Start Over
+              </button>
+              <a
+                href="/interview"
+                data-cursor="examine"
+                className="btn-hard inline-flex items-center gap-2 bg-seal px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper-2"
+              >
+                <GraduationCap className="h-4 w-4" />
+                The Examination
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
           ) : (
             <Link
               href="/"
