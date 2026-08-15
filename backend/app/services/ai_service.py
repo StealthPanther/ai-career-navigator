@@ -23,7 +23,7 @@ class AIService:
         
         # Backup: Google Gemini (1M token context for complex resumes)
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-        self.gemini_model = genai.GenerativeModel('gemini-pro')
+        self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
         
         # Thread pool for blocking synchronous calls (like Gemini)
         self.executor = ThreadPoolExecutor(max_workers=3)
