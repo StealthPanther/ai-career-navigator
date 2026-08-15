@@ -23,7 +23,7 @@ class AIService:
         
         # Backup: Google Gemini (1M token context for complex resumes)
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-        self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+        self.gemini_model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
         
         # Thread pool for blocking synchronous calls (like Gemini)
         self.executor = ThreadPoolExecutor(max_workers=3)
@@ -89,7 +89,7 @@ Extract ALL skills mentioned (technical and soft skills).
                 print(f"Gemini also failed: {e2}")
                 # Ultimate fallback for resume parsing
                 return {
-                    "name": "User",
+                    "name": f"Error: {str(e2)}",
                     "email": "",
                     "phone": "",
                     "skills": [],
